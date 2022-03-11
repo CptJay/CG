@@ -8,21 +8,32 @@
 #include <string>
 
 
-
+img::EasyImage test(){
+    img::EasyImage image(256,256);
+    for(unsigned int i = 0; i < 256; i++)
+        for(unsigned int j = 0; j < 256; j++)
+        {
+            image(i,j).red = i;
+            image(i,j).green = j;
+            image(i,j).blue = (i+j)%256;
+        }
+    std::ofstream fout("test.bmp", std::ios::binary);
+    fout << image;
+    fout.close();
+    return image;
+}
 
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     std::string type = configuration["General"]["type"].as_string_or_die();
     int size = configuration["General"]["size"].as_int_or_die();
-    std::vector<int> backgroundcolor = configuration["General"]["backgroundcolor"].as_int_tuple_or_die();
-    ini::Entry inputfile = configuration["2DLSystem"]["inputfile"];
-    std::vector<int> color = configuration["2DLSystem"]["color"].as_int_tuple_or_die();
+    auto backgroundcolor = configuration["General"]["backgroundcolor"].as_int_tuple_or_die();
+    auto inputfile = configuration["2DLSystem"]["inputfile"].as_string_or_die();
+    auto color = configuration["2DLSystem"]["color"].as_double_tuple_or_die();
     LParser::LSystem2D l_system;
     std::ifstream input_stream("32_segment_curve.L2D");
     input_stream >> l_system;
     input_stream.close();
-
-
 
     Geheel geheel;
     auto x = geheel.drawLSystem(l_system);
@@ -58,7 +69,9 @@ int main(int argc, char const* argv[])
                                 continue;
                         }
 
-                        img::EasyImage image = generate_image(conf);
+                        img::EasyImage image = test();
+//                        img::EasyImage image = generate_image(conf);
+
                         if(image.get_height() > 0 && image.get_width() > 0)
                         {
                                 std::string::size_type pos = fileName.rfind('.');

@@ -13,8 +13,6 @@
 using Lines2D = std::vector<Line2D>;
 
 class Geheel {
-    std::vector<double> xcoordinaten;
-    std::vector<double> ycoordinaten;
 
     std::set<char> alfabet;
     std::string replacement;
@@ -23,9 +21,7 @@ class Geheel {
     unsigned int iterations;
     double starting_angle;
 
-
 public:
-
     img::EasyImage draw2DLines(const Lines2D &lines, int size);
     Lines2D drawLSystem(const LParser::LSystem2D &l_system);
 };

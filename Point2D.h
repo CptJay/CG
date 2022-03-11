@@ -10,8 +10,6 @@ class Point2D {
 public:
     double x;
     double y;
-    int x_afgerond;
-    int y_afgerond;
 
     void schaling(double schaalfactor);
 

@@ -6,25 +6,26 @@
 #include "Geheel.h"
 
 img::EasyImage Geheel::draw2DLines(const Lines2D &lines, int size) {
+    double min_x = std::numeric_limits<double>::infinity();
+    double min_y = std::numeric_limits<double>::infinity();
+    double max_y = -std::numeric_limits<double>::infinity();
+    double max_x = -std::numeric_limits<double>::infinity();
     for (auto line : lines){
-        xcoordinaten.push_back(line.p1.x);
-        xcoordinaten.push_back(line.p2.x);
-        ycoordinaten.push_back(line.p1.y);
-        ycoordinaten.push_back(line.p2.y);
+        min_x = std::min(min_x,std::min(line.p1.x, line.p2.x));
+        min_y = std::min(min_y,std::min(line.p1.y, line.p2.y));
+        max_x = std::max(max_x,std::max(line.p1.x, line.p2.x));
+        max_y = std::max(max_y,std::max(line.p1.y, line.p2.y));
     }
-    auto [min_x, max_x] = std::minmax_element(std::begin(xcoordinaten), std::end(xcoordinaten));
-    auto [min_y, max_y] = std::minmax_element(std::begin(ycoordinaten), std::end(ycoordinaten));
-
-    double x_afstand = *max_x - *min_x;
-    double y_afstand = *max_y - *min_y;
+    double x_afstand = max_x - min_x;
+    double y_afstand = max_y - min_y;
 
     double image_x = size * (x_afstand / std::max(x_afstand, y_afstand));
     double image_y = size * (y_afstand / std::max(x_afstand, y_afstand));
 
     double schaalfactor = 0.95 * (image_x / x_afstand);
 
-    double dc_x = schaalfactor * ((*min_x + *max_x)/2);
-    double dc_y = schaalfactor * ((*min_y + *max_y)/2);
+    double dc_x = schaalfactor * ((min_x + max_x)/2);
+    double dc_y = schaalfactor * ((min_y + max_y)/2);
     double dx = (image_x / 2) - dc_x;
     double dy = (image_y / 2) - dc_y;
 
@@ -49,12 +50,25 @@ Lines2D Geheel::drawLSystem(const LParser::LSystem2D &l_system) {
     replacement = l_system.get_replacement(initiator[0]);
     iterations = l_system.get_nr_iterations();
     angle = l_system.get_angle();
+    int counter = 0;
 
+    std::string huidige_string = replacement;
     for (int i = 0; i < iterations; i++){
         for (char c : replacement){
             if (c == initiator[0]){
 
             } else{
+
+            }
+        }
+    }
+
+    // als iteraties != counter --> recursie
+    // anders teken
+    if (counter != iterations){
+        counter++;
+        for (auto c : huidige_string){
+            if (c == initiator[0]){
 
             }
         }

@@ -65,7 +65,7 @@ Lines2D Geheel::drawLSystem(const LParser::LSystem2D &l_system) {
 
     // als iteraties != counter --> recursie
     // anders teken
-    if (counter != iterations){
+    while (counter != iterations){
         counter++;
         for (auto c : huidige_string){
             if (c == initiator[0]){
@@ -73,6 +73,7 @@ Lines2D Geheel::drawLSystem(const LParser::LSystem2D &l_system) {
             }
         }
     }
+
 
     return Lines2D();
 }

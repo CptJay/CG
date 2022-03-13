@@ -23,7 +23,7 @@ img::EasyImage test(){
     return image;
 }
 
-img::Color TupleColor(std::vector<double> tup){
+img::Color Tuple2Color(std::vector<double> tup){
     img::Color color(tup.at(0) * 255, tup.at(1) * 255, tup.at(2) * 255);
     return color;
 }
@@ -44,9 +44,9 @@ img::EasyImage intro(const ini::Configuration &configuration){
     for (unsigned int i = 0; i < width; i++){
         for (unsigned int j = 0; j < height; j++){
             if ((i/W)%2 == (j/H)%2){
-                image(i, j) = TupleColor(colorWhite);
+                image(i, j) = Tuple2Color(colorWhite);
             } else{
-                image(i, j) = TupleColor(colorBlack);
+                image(i, j) = Tuple2Color(colorBlack);
             }
         }
     }
@@ -64,8 +64,9 @@ img::EasyImage QuarterCircle(const ini::Configuration &configuration){
 
     auto W = width / (nrLines - 1);
     auto H = height / (nrLines - 1);
+    img::EasyImage image(width, height);
 
-
+    return image;
 }
 
 img::EasyImage generate_image(const ini::Configuration &configuration)

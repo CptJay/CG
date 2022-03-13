@@ -23,6 +23,51 @@ img::EasyImage test(){
     return image;
 }
 
+img::Color TupleColor(std::vector<double> tup){
+    img::Color color(tup.at(0) * 255, tup.at(1) * 255, tup.at(2) * 255);
+    return color;
+}
+
+img::EasyImage intro(const ini::Configuration &configuration){
+    auto type = configuration["General"]["type"].as_string_or_die();
+    auto width = configuration["ImageProperties"]["width"].as_int_or_die();
+    auto height = configuration["ImageProperties"]["height"].as_int_or_die();
+    auto nrXBlocks = configuration["BlockProperties"]["nrXBlocks"].as_int_or_die();
+    auto nrYBlocks = configuration["BlockProperties"]["nrYBlocks"].as_int_or_die();
+    auto colorWhite = configuration["BlockProperties"]["colorWhite"].as_double_tuple_or_die();
+    auto colorBlack = configuration["BlockProperties"]["colorBlack"].as_double_tuple_or_die();
+    auto invertColors = configuration["BlockProperties"]["invertColors"].as_bool_or_default(false);
+
+    auto W = width / nrXBlocks;
+    auto H = height / nrYBlocks;
+    img::EasyImage image(width, height);
+    for (unsigned int i = 0; i < width; i++){
+        for (unsigned int j = 0; j < height; j++){
+            if ((i/W)%2 == (j/H)%2){
+                image(i, j) = TupleColor(colorWhite);
+            } else{
+                image(i, j) = TupleColor(colorBlack);
+            }
+        }
+    }
+    return image;
+}
+
+img::EasyImage QuarterCircle(const ini::Configuration &configuration){
+    auto type = configuration["General"]["type"].as_string_or_die();
+    auto width = configuration["ImageProperties"]["width"].as_int_or_die();
+    auto height = configuration["ImageProperties"]["height"].as_int_or_die();
+    auto figure = configuration["LineProperties"]["figure"].as_string_or_die();
+    auto nrLines = configuration["LineProperties"]["nrLines"].as_int_or_die();
+    auto backgroundcolor = configuration["LineProperties"]["backgroundcolor"].as_double_tuple_or_die();
+    auto lineColor = configuration["LineProperties"]["lineColor"].as_double_tuple_or_die();
+
+    auto W = width / (nrLines - 1);
+    auto H = height / (nrLines - 1);
+
+
+}
+
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     std::string type = configuration["General"]["type"].as_string_or_die();
@@ -69,7 +114,7 @@ int main(int argc, char const* argv[])
                                 continue;
                         }
 
-                        img::EasyImage image = test();
+                        img::EasyImage image = intro(conf);
 //                        img::EasyImage image = generate_image(conf);
 
                         if(image.get_height() > 0 && image.get_width() > 0)

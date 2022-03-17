@@ -50,7 +50,7 @@ Lines2D Geheel::drawLSystem(const LParser::LSystem2D &l_system) {
     replacement = l_system.get_replacement(initiator[0]);
     iterations = l_system.get_nr_iterations();
     angle = l_system.get_angle();
-    int counter = 0;
+    unsigned int counter = 0;
 
     std::string huidige_string = replacement;
     for (int i = 0; i < iterations; i++){
@@ -73,8 +73,6 @@ Lines2D Geheel::drawLSystem(const LParser::LSystem2D &l_system) {
             }
         }
     }
-
-
     return Lines2D();
 }
 

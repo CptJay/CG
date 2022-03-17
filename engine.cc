@@ -69,6 +69,16 @@ img::EasyImage QuarterCircle(const ini::Configuration &configuration){
     return image;
 }
 
+img::EasyImage testLines(){
+    img::EasyImage img;
+    img.draw_line(0,0,0,0,img::Color(1,1,0));
+    img.draw_line(0,0,1,1,img::Color(1,1,0));
+    std::ofstream fout("testt.bmp", std::ios::binary);
+    fout << img;
+    fout.close();
+    return img;
+}
+
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     std::string type = configuration["General"]["type"].as_string_or_die();
@@ -115,7 +125,8 @@ int main(int argc, char const* argv[])
                                 continue;
                         }
 
-                        img::EasyImage image = intro(conf);
+                        img::EasyImage image = testLines();
+//                        img::EasyImage image = intro(conf);
 //                        img::EasyImage image = generate_image(conf);
 
                         if(image.get_height() > 0 && image.get_width() > 0)

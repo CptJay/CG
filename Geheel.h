@@ -13,6 +13,7 @@ using Lines2D = std::vector<Line2D>;
 class Geheel {
 private:
     std::set<char> alfabet;
+    LParser::LSystem2D parser;
     std::string replacement;
     double angle;
     std::string initiator;
@@ -24,7 +25,7 @@ private:
     std::pair<double, double> lastPos = {0,0};
     img::Color color;
     img::Color backgroundcolor;
-    std::vector<std::string> stack;
+    std::vector<std::vector<double>> stackBrackets; // (x, y, angle)
 
     void fixAngle();
     double gradsToRads(double an) const;
@@ -34,8 +35,6 @@ public:
     void drawLSystem(const LParser::LSystem2D &l_system, int s, img::Color c, img::Color backg);
     img::EasyImage draw2DLines();
     std::string replacementFixer(std::string s, unsigned int counter, const LParser::LSystem2D &l_system);
-
-
 };
 
 

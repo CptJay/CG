@@ -41,6 +41,7 @@ img::EasyImage Geheel::draw2DLines() {
 }
 
 void Geheel::drawLSystem(const LParser::LSystem2D &l_system, int s, img::Color c, img::Color backg) {
+    this->parser = l_system;
     this->color = c;
     this->backgroundcolor = backg;
     this->size = s;
@@ -56,13 +57,21 @@ void Geheel::drawLSystem(const LParser::LSystem2D &l_system, int s, img::Color c
         if (fS == '+') {
             starting_angle += angle;
             fixAngle();
-            continue;
         } else if (fS == '-') {
             starting_angle -= angle;
             fixAngle();
-            continue;
+        } else if (fS == '('){
+            stackBrackets.push_back({lastPos.first, lastPos.second, starting_angle});
+        } else if (fS == ')'){
+            auto pep = stackBrackets.back();
+            stackBrackets.pop_back();
+            lastPos.first = pep.at(0);
+            lastPos.second = pep.at(1);
+            starting_angle = pep.at(2);
+        } else {
+            makeLine(fS);
         }
-        makeLine(fS);
+
     }
 }
 
@@ -77,6 +86,10 @@ std::string Geheel::replacementFixer(std::string s, unsigned int counter, const 
                 a += "+";
             } else if (c == '-') {
                 a += "-";
+            } else if (c == '(') {
+                a += "(";
+            } else if (c == ')') {
+                a += ")";
             } else {
                 a += l_system.get_replacement(c);
             }
@@ -104,11 +117,11 @@ void Geheel::makeLine(const char &c) {
     line2D.p1.y = lastPos.second;
     line2D.p2.x = line2D.p1.x + std::cos((gradsToRads(starting_angle)));
     line2D.p2.y = line2D.p1.y + std::sin((gradsToRads(starting_angle)));
-    // check if "c" is part of alphabet, then add to Lines2D;
-    if (isInAlphabet(c)) {
+    std::cout << c << std::endl;
+    if (parser.draw(c)) {
         lines2D.push_back(line2D);
+        lastPos = {line2D.p2.x, line2D.p2.y};
     }
-    lastPos = {line2D.p2.x, line2D.p2.y};
 }
 
 bool Geheel::isInAlphabet(const char &c) const {

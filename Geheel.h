@@ -6,7 +6,7 @@
 #include "Line2D.h"
 #include "easy_image.h"
 #include "l_parser.h"
-#include <math.h>
+#include <cmath>
 
 using Lines2D = std::vector<Line2D>;
 
@@ -24,6 +24,7 @@ private:
     std::pair<double, double> lastPos = {0,0};
     img::Color color;
     img::Color backgroundcolor;
+    std::vector<std::string> stack;
 
     void fixAngle();
     double gradsToRads(double an) const;

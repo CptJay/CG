@@ -30,7 +30,6 @@ private:
     void fixAngle();
     double gradsToRads(double an) const;
     void makeLine(const char &c);
-    bool isInAlphabet(const char &c) const;
 public:
     void drawLSystem(const LParser::LSystem2D &l_system, int s, img::Color c, img::Color backg);
     img::EasyImage draw2DLines();

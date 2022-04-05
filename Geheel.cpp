@@ -8,6 +8,7 @@ img::EasyImage Geheel::draw2DLines() {
     double min_y = std::numeric_limits<double>::infinity();
     double max_y = -std::numeric_limits<double>::infinity();
     double max_x = -std::numeric_limits<double>::infinity();
+
     for (auto &line: lines2D) {
         min_x = std::min(min_x, std::min(line.p1.x, line.p2.x));
         min_y = std::min(min_y, std::min(line.p1.y, line.p2.y));
@@ -71,7 +72,6 @@ void Geheel::drawLSystem(const LParser::LSystem2D &l_system, int s, img::Color c
         } else {
             makeLine(fS);
         }
-
     }
 }
 
@@ -117,18 +117,11 @@ void Geheel::makeLine(const char &c) {
     line2D.p1.y = lastPos.second;
     line2D.p2.x = line2D.p1.x + std::cos((gradsToRads(starting_angle)));
     line2D.p2.y = line2D.p1.y + std::sin((gradsToRads(starting_angle)));
-    std::cout << c << std::endl;
     if (parser.draw(c)) {
         lines2D.push_back(line2D);
         lastPos = {line2D.p2.x, line2D.p2.y};
     }
 }
 
-bool Geheel::isInAlphabet(const char &c) const {
-    for (auto &a: alfabet) {
-        if (c == a) return true;
-    }
-    return false;
-}
 
 

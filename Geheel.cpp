@@ -1,6 +1,3 @@
-//
-// Created by yassir on 09.03.22.
-//
 
 #include <algorithm>
 #include "Geheel.h"
@@ -44,36 +41,35 @@ img::EasyImage Geheel::draw2DLines(const Lines2D &lines, int size) {
 }
 
 Lines2D Geheel::drawLSystem(const LParser::LSystem2D &l_system) {
-    initiator = l_system.get_initiator();
     alfabet = l_system.get_alphabet();
-    starting_angle = l_system.get_starting_angle();
-    replacement = l_system.get_replacement(initiator[0]);
+    initiator = l_system.get_initiator(); //start string
     iterations = l_system.get_nr_iterations();
     angle = l_system.get_angle();
+    starting_angle = l_system.get_starting_angle();
     unsigned int counter = 0;
 
-    std::string huidige_string = replacement;
-    for (int i = 0; i < iterations; i++){
-        for (char c : replacement){
-            if (c == initiator[0]){
+    std::string seq = replacementfixer(initiator, counter, l_system);
 
-            } else{
-
-            }
-        }
-    }
-
-    // als iteraties != counter --> recursie
-    // anders teken
-    while (counter != iterations){
-        counter++;
-        for (auto c : huidige_string){
-            if (c == initiator[0]){
-
-            }
-        }
-    }
     return Lines2D();
+}
+
+std::string Geheel::replacementfixer(std::string s, unsigned int counter, const LParser::LSystem2D &l_system) {
+    if (counter == iterations){
+        return s;
+    } else{
+        std::string a;
+        counter++;
+        for (auto c : s){
+            if (c == '+') {
+                a += "+";
+            } else if (c == '-'){
+                a += "-";
+            } else {
+                a += l_system.get_replacement(c);
+            }
+        }
+        return replacementfixer(a, counter, l_system);
+    }
 }
 
 

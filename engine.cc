@@ -96,6 +96,14 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 	return geheel.draw2DLines(x, size);
 }
 
+std::vector<Line2D> line2Dfixer(LParser::LSystem2D &system2D, const std::string sign, std::vector<double> color){
+    Line2D line;
+    line.p2.x = 0;
+    line.p2.y = 0;
+    double x = 0;
+    double y = 0;
+}
+
 int main(int argc, char const* argv[])
 {
         int retVal = 0;

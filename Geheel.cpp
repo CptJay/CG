@@ -1,13 +1,14 @@
 
 #include <algorithm>
 #include "Geheel.h"
+#include "Line2D.h"
 
-img::EasyImage Geheel::draw2DLines(const Lines2D &lines, int size) {
+img::EasyImage Geheel::draw2DLines() {
     double min_x = std::numeric_limits<double>::infinity();
     double min_y = std::numeric_limits<double>::infinity();
     double max_y = -std::numeric_limits<double>::infinity();
     double max_x = -std::numeric_limits<double>::infinity();
-    for (auto line : lines){
+    for (auto &line : lines2D){
         min_x = std::min(min_x,std::min(line.p1.x, line.p2.x));
         min_y = std::min(min_y,std::min(line.p1.y, line.p2.y));
         max_x = std::max(max_x,std::max(line.p1.x, line.p2.x));
@@ -26,34 +27,46 @@ img::EasyImage Geheel::draw2DLines(const Lines2D &lines, int size) {
     double dx = (image_x / 2) - dc_x;
     double dy = (image_y / 2) - dc_y;
 
-    img::EasyImage img;
-    for (auto line : lines){
+    img::EasyImage img(size, size, backgroundcolor);
+    for (auto &line : lines2D){
         line.p1.schaling(schaalfactor);
         line.p2.schaling(schaalfactor);
         line.p1.optelling(dx, dy);
         line.p2.optelling(dx,dy);
         line.p1.afronden();
         line.p2.afronden();
-        img::Color color = img::Color(line.color.red * 255, line.color.green * 255, line.color.blue * 255);
-        img.draw_line(line.p1.x, line.p1.y, line.p2.x, line.p2.y, color);
+        img.draw_line(line.p1.x, line.p1.y, line.p2.x, line.p2.y, this->color);
     }
     return img;
 }
 
-Lines2D Geheel::drawLSystem(const LParser::LSystem2D &l_system) {
+void Geheel::drawLSystem(const LParser::LSystem2D &l_system, int s, img::Color c, img::Color backg) {
+    this->color = c;
+    this->backgroundcolor = backg;
+    this->size = s;
     alfabet = l_system.get_alphabet();
     initiator = l_system.get_initiator(); //start string
     iterations = l_system.get_nr_iterations();
     angle = l_system.get_angle();
     starting_angle = l_system.get_starting_angle();
     unsigned int counter = 0;
+    fullString = replacementFixer(initiator, counter, l_system);
 
-    std::string seq = replacementfixer(initiator, counter, l_system);
-
-    return Lines2D();
+    for (auto &fS: fullString){
+        if (fS == '+'){
+            starting_angle += angle;
+            fixAngle();
+            continue;
+        } else if (fS == '-'){
+            starting_angle -= angle;
+            fixAngle();
+            continue;
+        }
+        makeLine(fS);
+    }
 }
 
-std::string Geheel::replacementfixer(std::string s, unsigned int counter, const LParser::LSystem2D &l_system) {
+std::string Geheel::replacementFixer(std::string s, unsigned int counter, const LParser::LSystem2D &l_system) {
     if (counter == iterations){
         return s;
     } else{
@@ -68,8 +81,41 @@ std::string Geheel::replacementfixer(std::string s, unsigned int counter, const 
                 a += l_system.get_replacement(c);
             }
         }
-        return replacementfixer(a, counter, l_system);
+        return replacementFixer(a, counter, l_system);
     }
+}
+
+void Geheel::fixAngle() {
+    while (starting_angle >= 360){
+        starting_angle -= 360;
+    }
+    while (starting_angle < 0){
+        starting_angle += 360;
+    }
+}
+
+double Geheel::gradsToRads(double an) const {
+    return an * (M_PI/180);
+}
+
+void Geheel::makeLine(const char &c) {
+    Line2D line2D;
+    line2D.p1.x = lastPos.first;
+    line2D.p1.y = lastPos.second;
+    line2D.p2.x = line2D.p1.x + std::cos((gradsToRads(starting_angle)));
+    line2D.p2.y = line2D.p1.y + std::sin((gradsToRads(starting_angle)));
+    // check if "c" is part of alphabet, then add to Lines2D;
+    if (isInAlphabet(c)){
+        lines2D.push_back(line2D);
+    }
+    lastPos = {line2D.p2.x, line2D.p2.y};
+}
+
+bool Geheel::isInAlphabet(const char &c) const {
+    for (auto &a: alfabet){
+        if (c == a) return true;
+    }
+    return false;
 }
 
 
